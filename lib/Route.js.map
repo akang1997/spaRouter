@@ -1,0 +1,1 @@
+{"version":3,"sources":["../src/es6/Route.js"],"names":[],"mappings":";;;;;;;;AAAA;;AAEA;;;;;;IAMM,K,GACF,eAAY,UAAZ,EAAwB;AAAA;AAEvB,C;;kBAGU,K","file":"Route.js","sourcesContent":["// manage route statck\n\n/**\n * Route 一个路由对象\n * 管理路由栈\n * 管理页面资源配置对象\n */\n\nclass Route {\n    constructor(parameters) {\n        \n    }\n}\n\nexport default Route"]}

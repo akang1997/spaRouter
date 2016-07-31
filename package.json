@@ -1,0 +1,32 @@
+{
+  "name": "spa-route",
+  "version": "0.0.1",
+  "description": "a route framework for single page app",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/akang1997/spaRouter.git"
+  },
+  "keywords": [
+    "spa",
+    "router"
+  ],
+  "author": "akang",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/akang1997/spaRouter/issues"
+  },
+  "homepage": "https://github.com/akang1997/spaRouter",
+  "engines": {
+    "node": ">= 4.1.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.11.4",
+    "babel-preset-es2015": "^6.9.0",
+    "tsd": "*"
+  },
+  "dependencies": {},
+  "scripts": {
+    "build": "babel src/es6 -d lib"
+  }
+}

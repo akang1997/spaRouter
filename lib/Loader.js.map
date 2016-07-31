@@ -1,0 +1,1 @@
+{"version":3,"sources":["../src/es6/Loader.js"],"names":[],"mappings":";;;;AAAA;AACA;AACA;;;IAGM,M,GACF,gBAAY,UAAZ,EAAwB;AAAA;AAEvB,C","file":"Loader.js","sourcesContent":["// ajax resource loader, base on jquery ajax api\n// include cache\n/**\n * Loader\n */\nclass Loader {\n    constructor(parameters) {\n        \n    }\n}\n\n"]}

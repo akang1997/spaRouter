@@ -2,6 +2,8 @@
 
 ## a router system for single page app
 
+src base on es6
+
 ### support
 1. support dynamic load resource for every page
 2. only work in a div the user given
