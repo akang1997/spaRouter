@@ -25,8 +25,11 @@ var pageConfMap = {};
 var Statge = function () {
     _createClass(Statge, null, [{
         key: "addPageConf",
+
+        /**
+         * @param  pc : page config or page config map
+         */
         value: function addPageConf(pc) {
-            // page config or page config map
             // not check duplicate
             if (typeof pc.pageId === "string") {
                 pageConfMap[pc.pageId] = pc;

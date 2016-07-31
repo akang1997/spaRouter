@@ -13,7 +13,10 @@ var pageConfMap = {};
 
 
 class Statge{
-    static addPageConf(pc) {  // page config or page config map
+    /**
+     * @param  pc : page config or page config map
+     */
+    static addPageConf(pc) { 
         // not check duplicate
         if (typeof pc.pageId === "string") {
             pageConfMap[pc.pageId] = pc;
