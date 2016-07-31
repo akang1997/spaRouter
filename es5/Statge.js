@@ -62,4 +62,3 @@ var Statge = function () {
 }();
 
 exports.default = Statge;
-//# sourceMappingURL=Statge.js.map

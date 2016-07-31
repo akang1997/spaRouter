@@ -22,11 +22,10 @@
   },
   "devDependencies": {
     "babel-cli": "^6.11.4",
-    "babel-preset-es2015": "^6.9.0",
-    "tsd": "*"
+    "babel-preset-es2015": "^6.9.0"
   },
   "dependencies": {},
   "scripts": {
-    "build": "babel src/es6 -d lib"
+    "build": "babel src/es6 -d es5"
   }
 }

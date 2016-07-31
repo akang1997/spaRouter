@@ -68,4 +68,3 @@ var SenceManager = function () {
 
     return SenceManager;
 }();
-//# sourceMappingURL=SenceManager.js.map

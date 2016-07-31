@@ -10,4 +10,3 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var Loader = function Loader(parameters) {
     _classCallCheck(this, Loader);
 };
-//# sourceMappingURL=Loader.js.map

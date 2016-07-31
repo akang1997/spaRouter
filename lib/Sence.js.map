@@ -1,1 +1,0 @@
-{"version":3,"sources":["../src/es6/Sence.js"],"names":[],"mappings":";;;;AAAA;;;IAGM,K,GACF,eAAY,UAAZ,EAAwB;AAAA;AAEvB,C","file":"Sence.js","sourcesContent":["/**\n * Sence 场景类\n */\nclass Sence {\n    constructor(parameters) {\n        \n    }\n}"]}

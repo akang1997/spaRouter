@@ -8,4 +8,3 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var Sence = function Sence(parameters) {
     _classCallCheck(this, Sence);
 };
-//# sourceMappingURL=Sence.js.map
