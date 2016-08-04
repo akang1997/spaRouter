@@ -12,7 +12,7 @@
 	"isShellCommand": true,
 	"tasks": [
 		{
-			"args": ["src/es6", "--out-dir", "es5", "-w"],  // , -w , "--source-maps"
+			"args": ["src/es6", "--out-dir", "build/es5", "-w"],  // , -w , "--source-maps"
 			"taskName": "babel_watch",
 			"suppressTaskName": true,
 			"isBuildCommand": true, // make this the F1 > Task: Run Build Task gesture

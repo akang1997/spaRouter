@@ -1,6 +1,6 @@
 # spaRouter
 
-## a router system for single page app
+## a router system for single page app require jQuery
 
 src base on es6
 
