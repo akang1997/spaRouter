@@ -115,7 +115,7 @@
 	                timeout: CONF.timeout,
 	                dataType: "text",
 	                success: function success(txt) {
-	                    cache[path] = txt;
+	                    setCache(path, txt);
 	                    succ && succ;
 	                },
 	                error: err,
@@ -159,6 +159,7 @@
 	            this.onload = this.onerror = null;
 	            d.resolve("script load done: " + path);
 	            succ && succ();
+	            setCache(path, true);
 	        };
 	        script.onerror = function () {
 	            this.onerror = this.onerror = null;
@@ -168,6 +169,9 @@
 	        script.setAttribute("src", path);
 	        document.head.appendChild(script);
 	        return d.promise();
+	    },
+	    _getCache: function _getCache() {
+	        return cache;
 	    }
 	};
 

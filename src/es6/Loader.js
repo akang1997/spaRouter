@@ -50,7 +50,7 @@ var loader = {
                 , timeout: CONF.timeout
                 , dataType: "text"
                 , success: function (txt) {
-                    cache[path] = txt;
+                    setCache(path , txt);
                     succ && succ;
                 }
                 , error: err
@@ -65,6 +65,7 @@ var loader = {
         var jsArr = scriptArr.map(function (path) {
             return loader.loadScript(path);
         });
+        
         return $.when.apply($, arr.concat(jsArr)).then(function (xhrs) {
             var retArr = [], ret;
             for (var i = 0; i < arguments.length; i++) {
@@ -92,6 +93,7 @@ var loader = {
             this.onload = this.onerror = null;
             d.resolve("script load done: " + path);
             succ && succ();
+            setCache(path, true);
         }
         script.onerror = function () {
             this.onerror = this.onerror = null;
@@ -101,6 +103,9 @@ var loader = {
         script.setAttribute("src", path);
         document.head.appendChild(script);
         return d.promise();
+    }
+    , _getCache(){
+        return cache;
     }
 };
 
