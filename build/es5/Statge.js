@@ -10,6 +10,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 // 舞台类, 就是一块div的 单页面 的管理类，
 // 一个舞台可一切换不同的场景，但是最多只有一个场景在前台
+//
 
 // 存放所有的资源配置
 var pageConfMap = {};

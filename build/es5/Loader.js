@@ -5,29 +5,24 @@ Object.defineProperty(exports, "__esModule", {
 });
 // ajax resource loader, base on jquery ajax api
 // include cache
-// class Loader {
-//     constructor(parameters) {
-
-//     }
-// }
 var CONF = {
     timeout: 30000
 };
 
 // 当前页面的路径
-var pagePath = function () {
-    var l = location;
-    var file = l.origin + l.pathname;
-    return file.substring(0, file.lastIndexOf("/"));
-}();
+// var pagePath = (function () {
+//     var l = location;
+//     var file = l.origin + l.pathname;
+//     return file.substring(0, file.lastIndexOf("/"));
+// })();
 
-function path2Url(path) {
-    if (path.startsWith("http:") || path.startsWith("https:")) {
-        return path;
-    } else {
-        return pagePath + path;
-    }
-}
+// function path2Url(path) {
+//     if (path.startsWith("http:") || path.startsWith("https:")) {
+//         return path;
+//     } else {
+//         return pagePath + path;
+//     }
+// }
 
 // 基于URL全路径的内存缓存？？
 var cache = {};
@@ -38,7 +33,7 @@ function setCache(path, txt) {
     cache[path] = txt;
 }
 
-// 基于jQuery
+// 基于jQuery，全局单列
 var loader = {
     query: function query(path, succ, err, complete) {
         var txt = getCache(path); /// check cache first

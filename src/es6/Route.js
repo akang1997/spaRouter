@@ -1,14 +1,14 @@
 // manage route statck
 
 /**
- * Route 一个路由对象
- * 管理路由栈
- * 管理页面资源配置对象
+ * Route 一个路由对象，存放一个page实例的相关信息
  */
-
 class Route {
-    constructor(parameters) {
-        
+    constructor(pageID, url, senceInstance, domCache) {
+        this.pageID = pageID; 
+        this.url = url;
+        this.sence = senceInstance;
+        this.domCache = !!domCache;
     }
 }
 

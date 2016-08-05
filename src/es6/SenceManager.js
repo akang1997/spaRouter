@@ -1,11 +1,13 @@
 // 
 
 /**
- * SenceManager 场景管理类
+ * SenceManager 场景 管理类
  */
 class SenceManager {
-    constructor(parameters) {
-        this.init(parameters)
+
+    constructor() {  // 公共的构造函数，不会被覆盖
+        observable(this);
+        this.init(parameters);
     }
 
     beforeInit(){
@@ -50,4 +52,5 @@ class SenceManager {
     destroy(){
 
     }
+
 }
