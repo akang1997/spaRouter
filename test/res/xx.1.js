@@ -4,4 +4,4 @@ st.extendSence("xx2", {
     }
 });
 
-console.log('xx2');
+console.log('xx2 loaded');

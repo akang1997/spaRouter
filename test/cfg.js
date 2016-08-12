@@ -11,4 +11,9 @@ st.addSenceConf({
         ,html : "./res/xx.1.html"
         ,className: "xx2"
     }
+    ,"nest": {
+        script : "./res/nest.js"
+        ,html : "./res/nest.html"
+        ,className: "nest"
+    }
 })

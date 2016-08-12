@@ -148,7 +148,7 @@
 	        var txt = getCache(path); /// check cache first
 	        if (txt) {
 	            var d = $.Deferred();
-	            d.resolve(txt);
+	            d.resolve([txt, "from cache"]);
 	            succ && succ(txt);
 	            return d.promise();
 	        } else {
