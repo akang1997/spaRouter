@@ -9,16 +9,17 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 // manage route statck
 
 /**
- * Route 一个路由对象，存放一个page实例的相关信息
+ * Route 一个路由对象，存放一个sence的相关信息
  */
 
-var Route = function Route(pageID, url, senceInstance, domCache) {
+var Route = function Route(hashConf, data, options, senceInstance, statgeID) {
     _classCallCheck(this, Route);
 
-    this.pageID = pageID;
-    this.url = url;
+    this.hashConf = hashConf;
+    this.data = data;
+    this.options = options;
     this.sence = senceInstance;
-    this.domCache = !!domCache;
+    this.statgeID = statgeID;
 };
 
 exports.default = Route;

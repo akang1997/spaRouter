@@ -1,3 +1,5 @@
+import util from './util'
+
 // ajax resource loader, base on jquery ajax api
 // include cache
 var CONF = {
@@ -53,6 +55,15 @@ var loader = {
             });
         }
     }
+    , loadSenceRes(senceConf, succ, err){
+        var pathArr = [], scriptArr = [];
+        // if(senceConf.css) pathArr.push(senceConf.css);
+        if(senceConf.html) pathArr.push(senceConf.html);
+        pathArr = util.arrFlat(pathArr);
+        if(senceConf.script) scriptArr = senceConf.script;
+
+        return this.loadUrls(pathArr, util.makeArr(scriptArr), succ, err);
+    }
     , loadUrls(pathArr, scriptArr, succ, err) {
         var arr = pathArr.map(function (path) {
             return loader.query(path);
@@ -65,9 +76,9 @@ var loader = {
             var retArr = [], ret;
             for (var i = 0; i < arguments.length; i++) {
                 ret = arguments[i];
-                Array.isArray(ret) && retArr.push(ret[0]);
+                $.isArray(ret) && retArr.push(ret[0]);
             }
-            succ && succ.apply(null, retArr);
+            succ && succ.call(null, retArr);
         }, err);
     }
     // 使用script标签加载，不保证执行先后顺序

@@ -5,6 +5,7 @@ module.exports = {
     entry: {
         // 'webpack/hot/dev-server',
         // 'webpack-dev-server/client?http://localhost:8080',
+        st: path.resolve(__dirname, 'build/es5/st.js'),
         test: path.resolve(__dirname, 'build/es5/test.js')
     },
     output: {

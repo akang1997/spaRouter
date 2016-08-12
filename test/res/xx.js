@@ -1,3 +1,7 @@
-function xx(){}
+st.extendSence("xx1", {
+    init: function (param) {
+        console.log("init:", param);
+    }
+});
 
-console.log('xx');
+console.log('xx1');

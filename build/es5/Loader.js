@@ -3,6 +3,13 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+
+var _util = require("./util");
+
+var _util2 = _interopRequireDefault(_util);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 // ajax resource loader, base on jquery ajax api
 // include cache
 var CONF = {
@@ -56,6 +63,16 @@ var loader = {
             });
         }
     },
+    loadSenceRes: function loadSenceRes(senceConf, succ, err) {
+        var pathArr = [],
+            scriptArr = [];
+        // if(senceConf.css) pathArr.push(senceConf.css);
+        if (senceConf.html) pathArr.push(senceConf.html);
+        pathArr = _util2.default.arrFlat(pathArr);
+        if (senceConf.script) scriptArr = senceConf.script;
+
+        return this.loadUrls(pathArr, _util2.default.makeArr(scriptArr), succ, err);
+    },
     loadUrls: function loadUrls(pathArr, scriptArr, succ, err) {
         var arr = pathArr.map(function (path) {
             return loader.query(path);
@@ -69,9 +86,9 @@ var loader = {
                 ret;
             for (var i = 0; i < arguments.length; i++) {
                 ret = arguments[i];
-                Array.isArray(ret) && retArr.push(ret[0]);
+                $.isArray(ret) && retArr.push(ret[0]);
             }
-            succ && succ.apply(null, retArr);
+            succ && succ.call(null, retArr);
         }, err);
     }
     // 使用script标签加载，不保证执行先后顺序
