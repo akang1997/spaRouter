@@ -449,7 +449,8 @@
 	    function SubSence() {
 	        Sence.apply(this, arguments); // === super(arguments)
 	    }
-	    SubSence.prototype = Object.create(Sence.prototype, instanceProps);
+	    SubSence.prototype = Object.create(Sence.prototype);
+	    $.extend(SubSence.prototype, instanceProps);
 	    SubSence.prototype.constructor = SubSence;
 
 	    $.extend(SubSence, staticProps);
@@ -750,12 +751,15 @@
 	        if (this.rootEle.length === 0) {
 	            console.warn("no element found for Statge");
 	        }
+
+	        this.init();
 	    }
 
 	    _createClass(Statge, [{
 	        key: 'init',
 	        value: function init() {
 	            this._initDomFrm();
+	            this._initEvent();
 	        }
 
 	        // 初始化dom框架
@@ -763,7 +767,7 @@
 	    }, {
 	        key: '_initDomFrm',
 	        value: function _initDomFrm() {
-	            this.rootEle.addClass("st-statge").attr("statgeID", this.id);
+	            this.rootEle.addClass("st-statge " + this.id).attr("data-statgeid", this.id);
 	            this.isMain && this.rootEle.addClass("st-statge-main");
 	            this.rootEle.append("<div class='st-sences'></div>");
 	            this.sencesEle = this.rootEle.children(".st-sences");
@@ -782,7 +786,7 @@
 	            var jt = $(e.target),
 	                href = jt.attr("href"),
 	                conf = _util2.default.parseHash(href);
-	            if (conf.isSence) {
+	            if (conf.isSence && !conf.senceID) {
 	                // 吃掉事件
 	                e.stopPropogation();
 	                e.preventDefault();
@@ -825,7 +829,7 @@
 	                _this._changeSecne(hashConf, senceConf, resArr, options);
 	            }, function () {
 	                /// TODO alert load error
-	                console.log("load sence resource error: " + hashConf.senceID);
+	                console.error("load sence resource error: " + hashConf.senceID);
 	            });
 	        }
 	    }, {
@@ -836,9 +840,8 @@
 	            var aniType = options.aniType || "fade";
 
 	            // 创建新的 sence root dom
-	            var senceRoot = $('<div class="st-sence sts-before"></div>') // before show
-	            .addClass("st-statge-" + this.id) // 打上 view id
-	            .addClass("sts-" + aniType).addClass("st-id-" + senceConf.senceID).attr("data-senceid", senceConf.senceID).appendTo(this.sencesEle);
+	            var senceRoot = createSenceRoot(this.id, hashConf.senceID, aniType);
+	            senceRoot.appendTo(this.sencesEle);
 
 	            // 要考虑到有的sence，并没有对应的class，使用一个通用的common class？？
 	            // 创建新的 sence instance
@@ -868,11 +871,12 @@
 	                _util2.default.safeRun(oldSence.beforeAnimation, oldSence, [isBack, true], "oldSence.beforeAnimation");
 	                showOut(oldSence.$root, function () {
 	                    _util2.default.safeRun(oldSence.afterAnimation, oldSence, [isBack, true], "oldSence.afterAnimation");
-	                    _util2.default.safeRun(oldSence.destroy, oldSence, null, "oldSence.destroy");
-	                    showNewSence(newSence);
+	                    // util.safeRun(oldSence.destroy, oldSence, null, "oldSence.destroy");
+	                    destroyOldSence(oldSence);
+	                    showNewSence(newSence, isBack);
 	                });
 	            } else {
-	                showNewSence(newSence);
+	                showNewSence(newSence, isBack);
 	            }
 	        }
 
@@ -917,10 +921,31 @@
 	    return $dom.removeClass("sts-now").addClass("sts-after").one(_ui2.default.transitionEndEvent, after);
 	}
 
-	function showNewSence(newSence) {
+	function showNewSence(newSence, isBack) {
 	    showIn(newSence.$root, function () {
 	        _util2.default.safeRun(newSence.afterAnimation, newSence, [isBack, false], "newSence.afterAnimation: ");
 	    });
+	}
+
+	function destroyOldSence(oldSence) {
+	    try {
+	        // hide
+	        oldSence.$root.hide();
+	        // destroy
+	        oldSence.destroy();
+	        if (oldSence.$root) {
+	            oldSence.$root.off().empty().remove();
+	            oldSence.$root = null;
+	        }
+	    } catch (e) {
+	        console.warn("error when destroy old sence: ", e);
+	    }
+	}
+
+	function createSenceRoot(statgeID, senceID, aniType) {
+	    return $('<div class="st-sence sts-before"></div>') // before show
+	    // .addClass("st-statge-" + statgeID)  // 打上 view id
+	    .addClass("sts-" + aniType).addClass("st-id-" + senceID).attr("data-senceid", senceID);
 	}
 
 	exports.default = Statge;

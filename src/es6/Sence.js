@@ -64,7 +64,8 @@ export function extendSence(senceName, instanceProps, staticProps) {
     function SubSence() {
         Sence.apply(this, arguments);  // === super(arguments)
     }
-    SubSence.prototype = Object.create(Sence.prototype, instanceProps);
+    SubSence.prototype = Object.create(Sence.prototype);
+    $.extend(SubSence.prototype, instanceProps);
     SubSence.prototype.constructor = SubSence;
 
     $.extend(SubSence, staticProps);

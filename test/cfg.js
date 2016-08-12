@@ -7,8 +7,8 @@ st.addSenceConf({
         ,className: "xx1"
     }
     ,"x2": {
-        script : "./res/xx1.js"
-        ,html : "./res/xx1.html"
+        script : "./res/xx.1.js"
+        ,html : "./res/xx.1.html"
         ,className: "xx2"
     }
 })
