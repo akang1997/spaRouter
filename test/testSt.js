@@ -1,8 +1,9 @@
 $(function () {
-    window.statge = st.addStatge("#st", {});
-    statge.loadSenceById("x1");
+    st.start();
+    window.statge1 = st.addStatge("#st1", {});
+    statge1.loadSenceById("x1");
     setTimeout(function () {
-        statge.loadSenceById("x2")
+        statge1.loadSenceById("x2")
     }, 2000)
 
 

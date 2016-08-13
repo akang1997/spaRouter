@@ -1,11 +1,15 @@
 
 export function alert(msg, cb) {
-
+    console.log("TODO: alert:" + msg);
 }
 
 var loadingCount = 0;
-export function showloading() { }
-export function hideloading() { }
+export function showloading() {
+    console.log('TODO: showloading');
+}
+export function hideloading() {
+    console.log('TODO: hideloading');
+}
 
 
 export var transitionEndEvent = 'webkitTransitionEnd';

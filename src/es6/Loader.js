@@ -1,4 +1,5 @@
 import util from './util'
+import ui from './ui'
 
 // ajax resource loader, base on jquery ajax api
 // include cache
@@ -47,7 +48,7 @@ var loader = {
                 , timeout: CONF.timeout
                 , dataType: "text"
                 , success: function (txt) {
-                    setCache(path , txt);
+                    setCache(path, txt);
                     succ && succ;
                 }
                 , error: err
@@ -55,23 +56,24 @@ var loader = {
             });
         }
     }
-    , loadSenceRes(senceConf, succ, err){
+    , loadSenceRes(senceConf, succ, err) {
         var pathArr = [], scriptArr = [];
         // if(senceConf.css) pathArr.push(senceConf.css);
-        if(senceConf.html) pathArr.push(senceConf.html);
+        if (senceConf.html) pathArr.push(senceConf.html);
         pathArr = util.arrFlat(pathArr);
-        if(senceConf.script) scriptArr = senceConf.script;
+        if (senceConf.script) scriptArr = senceConf.script;
 
         return this.loadUrls(pathArr, util.makeArr(scriptArr), succ, err);
     }
     , loadUrls(pathArr, scriptArr, succ, err) {
+        showLoading();
         var arr = pathArr.map(function (path) {
             return loader.query(path);
         });
         var jsArr = scriptArr.map(function (path) {
             return loader.loadScript(path);
         });
-        
+
         return $.when.apply($, arr.concat(jsArr)).then(function (xhrs) {
             var retArr = [], ret;
             for (var i = 0; i < arguments.length; i++) {
@@ -79,14 +81,14 @@ var loader = {
                 $.isArray(ret) && retArr.push(ret[0]);
             }
             succ && succ.call(null, retArr);
-        }, err);
+        }, err).then(hideLoading);
     }
     // 使用script标签加载，不保证执行先后顺序
     , loadScript(path, succ, err) {
         var d = $.Deferred();
 
         var flag = getCache(path);
-        if(flag){
+        if (flag) {
             d.resolve(true);
             succ && succ(true);
             return d.promise();
@@ -110,9 +112,16 @@ var loader = {
         document.head.appendChild(script);
         return d.promise();
     }
-    , _getCache(){
+    , _getCache() {
         return cache;
     }
 };
+
+function showLoading() {
+    ui.showloading();
+}
+function hideLoading() {
+    ui.hideloading();
+}
 
 export default loader;

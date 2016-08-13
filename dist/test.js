@@ -40,9 +40,8 @@
 /******/ 	return __webpack_require__(0);
 /******/ })
 /************************************************************************/
-/******/ ({
-
-/***/ 0:
+/******/ ([
+/* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -58,8 +57,8 @@
 	};
 
 /***/ },
-
-/***/ 2:
+/* 1 */,
+/* 2 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -90,13 +89,14 @@
 
 	// 解析hash的各个部件
 	function parseHash(hash) {
-	    var ret = { isSence: false };
+	    var ret = { isSence: false, hash: hash };
 	    if (startsWith(hash, "#!")) {
 	        ret.isSence = true;
 	    } else {
 	        return ret;
 	    }
 
+	    hash = hash.substr(2);
 	    var arr = hash.split("?");
 	    var sence = arr[0];
 	    var query = arr[1];
@@ -155,11 +155,63 @@
 	exports.default = $.extend({}, exports); // 导出默认 模块。。。
 
 /***/ },
+/* 3 */
+/***/ function(module, exports) {
 
-/***/ 10:
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.alert = alert;
+	exports.showloading = showloading;
+	exports.hideloading = hideloading;
+	function alert(msg, cb) {
+	    console.log("TODO: alert:" + msg);
+	}
+
+	var loadingCount = 0;
+	function showloading() {
+	    console.log('TODO: showloading');
+	}
+	function hideloading() {
+	    console.log('TODO: hideloading');
+	}
+
+	var transitionEndEvent = exports.transitionEndEvent = 'webkitTransitionEnd';
+
+	// 检测动画结束事件
+	setTimeout(function () {
+	    var transitions = {
+	        'transition': 'transitionend',
+	        'OTransition': 'oTransitionEnd',
+	        'MozTransition': 'transitionend',
+	        'WebkitTransition': 'webkitTransitionEnd'
+	    };
+	    var el = document.createElement('div');
+	    for (var t in transitions) {
+	        if (el.style[t] !== undefined) {
+	            exports.transitionEndEvent = transitionEndEvent = transitions[t];
+	            return;
+	        }
+	    }
+	}, 0);
+
+	// 导出默认 模块。。。 
+	// 在不使用 export default 时， exports 未定义 exports.default 字段
+	exports.default = $.extend({}, exports);
+
+/***/ },
+/* 4 */,
+/* 5 */,
+/* 6 */,
+/* 7 */,
+/* 8 */,
+/* 9 */,
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
@@ -168,6 +220,10 @@
 	var _util = __webpack_require__(2);
 
 	var _util2 = _interopRequireDefault(_util);
+
+	var _ui = __webpack_require__(3);
+
+	var _ui2 = _interopRequireDefault(_ui);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -235,6 +291,7 @@
 	        return this.loadUrls(pathArr, _util2.default.makeArr(scriptArr), succ, err);
 	    },
 	    loadUrls: function loadUrls(pathArr, scriptArr, succ, err) {
+	        showLoading();
 	        var arr = pathArr.map(function (path) {
 	            return loader.query(path);
 	        });
@@ -250,7 +307,7 @@
 	                $.isArray(ret) && retArr.push(ret[0]);
 	            }
 	            succ && succ.call(null, retArr);
-	        }, err);
+	        }, err).then(hideLoading);
 	    }
 	    // 使用script标签加载，不保证执行先后顺序
 	    ,
@@ -287,8 +344,14 @@
 	    }
 	};
 
+	function showLoading() {
+	    _ui2.default.showloading();
+	}
+	function hideLoading() {
+	    _ui2.default.hideloading();
+	}
+
 	exports.default = loader;
 
 /***/ }
-
-/******/ });
+/******/ ]);

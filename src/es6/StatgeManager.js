@@ -6,8 +6,31 @@ import Statge from './Statge'
 
 // hash 监听
 var listenFlag = false;
+
+export function slientChangeHash(hashStr) {
+    hashStr = hashStr || "#";
+    if (listenFlag) {
+        if (hashStr.charAt(0) !== "#") hashStr = "#" + hashStr;
+        if (hashStr !== location.hash) {
+            _ignoreTimes++;
+        }
+    }
+    location.hash = hashStr;
+}
+
+var _ignoreTimes = 0;
+function shouldIgnore() {
+    if (_ignoreTimes > 0) {
+        _ignoreTimes--;
+        return true;
+    } else if (_ignoreTimes < 0) {
+        _ignoreTimes = 0;
+    }
+    return false;
+}
 $(window).on("hashchange", function () {
-    if(!listenFlag) return;
+    if (!listenFlag) return;
+    if (shouldIgnore()) return;
 
     var hashConf = util.parseHash(location.hash);
     if (hashConf.isSence) {
@@ -40,8 +63,8 @@ export function getStatge(statgeID) {
     return statgeMap[statgeID];
 }
 
-export function removeStatge(statge){
-    if(typeof statge === 'string'){
+export function removeStatge(statge) {
+    if (typeof statge === 'string') {
         statge = getStatge(statge);
     }
     unRegister(statge.id);
@@ -50,17 +73,17 @@ export function removeStatge(statge){
 
 export function unRegister(statgeID) {
     var st = getStatge(statgeID);
-    if(st){
-        delete statgeMap[statge.id];
+    if (st) {
+        delete statgeMap[st.id];
         statgeCounter--;
     }
-    
+
     // if(statge.isMain){
     //     // TODO
     // }
 }
 
-export function getStatgeMap(){
+export function getStatgeMap() {
     return statgeMap;
 }
 
@@ -71,7 +94,7 @@ export function setMainStatge(statge) {
 function dispatchHashConf(hashConf) {
     var statgeID = hashConf.statgeID || mainStatgeID;
     var statge = statgeMap[statgeID];
-    if(!statge){
+    if (!statge) {
         return console.warn("no statge found: " + statgeID);
     }
 
@@ -82,7 +105,7 @@ export function start() {
     listenFlag = true;
 }
 
-export function stop(){
+export function stop() {
     listenFlag = false;
 }
 

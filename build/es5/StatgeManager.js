@@ -3,6 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+exports.slientChangeHash = slientChangeHash;
 exports.addStatge = addStatge;
 exports.getStatge = getStatge;
 exports.removeStatge = removeStatge;
@@ -30,8 +31,31 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 // hash 监听
 var listenFlag = false;
+
+function slientChangeHash(hashStr) {
+    hashStr = hashStr || "#";
+    if (listenFlag) {
+        if (hashStr.charAt(0) !== "#") hashStr = "#" + hashStr;
+        if (hashStr !== location.hash) {
+            _ignoreTimes++;
+        }
+    }
+    location.hash = hashStr;
+}
+
+var _ignoreTimes = 0;
+function shouldIgnore() {
+    if (_ignoreTimes > 0) {
+        _ignoreTimes--;
+        return true;
+    } else if (_ignoreTimes < 0) {
+        _ignoreTimes = 0;
+    }
+    return false;
+}
 $(window).on("hashchange", function () {
     if (!listenFlag) return;
+    if (shouldIgnore()) return;
 
     var hashConf = _util2.default.parseHash(location.hash);
     if (hashConf.isSence) {
@@ -75,7 +99,7 @@ function removeStatge(statge) {
 function unRegister(statgeID) {
     var st = getStatge(statgeID);
     if (st) {
-        delete statgeMap[statge.id];
+        delete statgeMap[st.id];
         statgeCounter--;
     }
 

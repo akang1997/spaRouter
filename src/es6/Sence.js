@@ -20,6 +20,7 @@ export function Sence(container, statgeID, route) { // 公共的构造函数，�
 $.extend(Sence.prototype, {
     // 新页面(必须带有data-page属性)插入到DOM的时候，在资源加载进去之前会触发
     beforeInit(resArr) { return resArr },  // 给一个修改的机会？？
+    beforeNextSence(){ },  // 在下一个场景实例创建之前执行
 
     // 类初始化时调用，在动画之前
     init(route) { },

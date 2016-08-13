@@ -50,31 +50,31 @@
 
 	var _Loader2 = _interopRequireDefault(_Loader);
 
-	var _Route = __webpack_require__(3);
+	var _Route = __webpack_require__(4);
 
 	var _Route2 = _interopRequireDefault(_Route);
 
-	var _Sence = __webpack_require__(4);
+	var _Sence = __webpack_require__(5);
 
 	var _Sence2 = _interopRequireDefault(_Sence);
 
-	var _SenceConfManager = __webpack_require__(6);
+	var _SenceConfManager = __webpack_require__(7);
 
 	var _SenceConfManager2 = _interopRequireDefault(_SenceConfManager);
 
-	var _observable = __webpack_require__(5);
+	var _observable = __webpack_require__(6);
 
 	var _observable2 = _interopRequireDefault(_observable);
 
-	var _Statge = __webpack_require__(7);
+	var _Statge = __webpack_require__(8);
 
 	var _Statge2 = _interopRequireDefault(_Statge);
 
-	var _StatgeManager = __webpack_require__(8);
+	var _StatgeManager = __webpack_require__(9);
 
 	var _StatgeManager2 = _interopRequireDefault(_StatgeManager);
 
-	var _ui = __webpack_require__(9);
+	var _ui = __webpack_require__(3);
 
 	var _ui2 = _interopRequireDefault(_ui);
 
@@ -100,7 +100,7 @@
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
@@ -109,6 +109,10 @@
 	var _util = __webpack_require__(2);
 
 	var _util2 = _interopRequireDefault(_util);
+
+	var _ui = __webpack_require__(3);
+
+	var _ui2 = _interopRequireDefault(_ui);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -176,6 +180,7 @@
 	        return this.loadUrls(pathArr, _util2.default.makeArr(scriptArr), succ, err);
 	    },
 	    loadUrls: function loadUrls(pathArr, scriptArr, succ, err) {
+	        showLoading();
 	        var arr = pathArr.map(function (path) {
 	            return loader.query(path);
 	        });
@@ -191,7 +196,7 @@
 	                $.isArray(ret) && retArr.push(ret[0]);
 	            }
 	            succ && succ.call(null, retArr);
-	        }, err);
+	        }, err).then(hideLoading);
 	    }
 	    // 使用script标签加载，不保证执行先后顺序
 	    ,
@@ -228,6 +233,13 @@
 	    }
 	};
 
+	function showLoading() {
+	    _ui2.default.showloading();
+	}
+	function hideLoading() {
+	    _ui2.default.hideloading();
+	}
+
 	exports.default = loader;
 
 /***/ },
@@ -262,13 +274,14 @@
 
 	// 解析hash的各个部件
 	function parseHash(hash) {
-	    var ret = { isSence: false };
+	    var ret = { isSence: false, hash: hash };
 	    if (startsWith(hash, "#!")) {
 	        ret.isSence = true;
 	    } else {
 	        return ret;
 	    }
 
+	    hash = hash.substr(2);
 	    var arr = hash.split("?");
 	    var sence = arr[0];
 	    var query = arr[1];
@@ -330,6 +343,53 @@
 /* 3 */
 /***/ function(module, exports) {
 
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.alert = alert;
+	exports.showloading = showloading;
+	exports.hideloading = hideloading;
+	function alert(msg, cb) {
+	    console.log("TODO: alert:" + msg);
+	}
+
+	var loadingCount = 0;
+	function showloading() {
+	    console.log('TODO: showloading');
+	}
+	function hideloading() {
+	    console.log('TODO: hideloading');
+	}
+
+	var transitionEndEvent = exports.transitionEndEvent = 'webkitTransitionEnd';
+
+	// 检测动画结束事件
+	setTimeout(function () {
+	    var transitions = {
+	        'transition': 'transitionend',
+	        'OTransition': 'oTransitionEnd',
+	        'MozTransition': 'transitionend',
+	        'WebkitTransition': 'webkitTransitionEnd'
+	    };
+	    var el = document.createElement('div');
+	    for (var t in transitions) {
+	        if (el.style[t] !== undefined) {
+	            exports.transitionEndEvent = transitionEndEvent = transitions[t];
+	            return;
+	        }
+	    }
+	}, 0);
+
+	// 导出默认 模块。。。 
+	// 在不使用 export default 时， exports 未定义 exports.default 字段
+	exports.default = $.extend({}, exports);
+
+/***/ },
+/* 4 */
+/***/ function(module, exports) {
+
 	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
@@ -357,7 +417,7 @@
 	exports.default = Route;
 
 /***/ },
-/* 4 */
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -369,7 +429,7 @@
 	exports.extendSence = extendSence;
 	exports.getSence = getSence;
 
-	var _observable = __webpack_require__(5);
+	var _observable = __webpack_require__(6);
 
 	var _observable2 = _interopRequireDefault(_observable);
 
@@ -400,6 +460,8 @@
 	        return resArr;
 	    },
 	    // 给一个修改的机会？？
+	    beforeNextSence: function beforeNextSence() {},
+	    // 在下一个场景实例创建之前执行
 
 	    // 类初始化时调用，在动画之前
 	    init: function init(route) {},
@@ -465,7 +527,7 @@
 	exports.default = $.extend({}, exports);
 
 /***/ },
-/* 5 */
+/* 6 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -626,7 +688,7 @@
 	exports.default = observable;
 
 /***/ },
-/* 6 */
+/* 7 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -669,7 +731,7 @@
 	exports.default = $.extend({}, exports); // 导出默认 模块。。。
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -684,11 +746,11 @@
 	//
 	// 除了管 sence 切换，其他的ui相关内容一律不管
 
-	var _Route = __webpack_require__(3);
+	var _Route = __webpack_require__(4);
 
 	var _Route2 = _interopRequireDefault(_Route);
 
-	var _SenceConfManager = __webpack_require__(6);
+	var _SenceConfManager = __webpack_require__(7);
 
 	var _SenceConfManager2 = _interopRequireDefault(_SenceConfManager);
 
@@ -696,7 +758,7 @@
 
 	var _util2 = _interopRequireDefault(_util);
 
-	var _observable = __webpack_require__(5);
+	var _observable = __webpack_require__(6);
 
 	var _observable2 = _interopRequireDefault(_observable);
 
@@ -704,15 +766,15 @@
 
 	var _Loader2 = _interopRequireDefault(_Loader);
 
-	var _Sence = __webpack_require__(4);
+	var _Sence = __webpack_require__(5);
 
 	var _Sence2 = _interopRequireDefault(_Sence);
 
-	var _StatgeManager = __webpack_require__(8);
+	var _StatgeManager = __webpack_require__(9);
 
 	var _StatgeManager2 = _interopRequireDefault(_StatgeManager);
 
-	var _ui = __webpack_require__(9);
+	var _ui = __webpack_require__(3);
 
 	var _ui2 = _interopRequireDefault(_ui);
 
@@ -740,8 +802,12 @@
 	        // route 对象的栈
 	        this.routeStack = [];
 	        this.rootEle = $(rootEle);
+	        if (this.rootEle.length !== 1) {
+	            console.log("not a valid root ele for statge", rootEle);
+	            return null;
+	        }
 	        this.runFlag = true;
-	        this.id = this.conf.name || _util2.default.uniqID("st_statge_");
+	        this.id = this.conf.name || this.rootEle.attr("id") || _util2.default.uniqID("st_statge_");
 
 	        this.isMain = !!this.conf.mainFlag;
 	        this.activeSence = null;
@@ -804,14 +870,14 @@
 	                    senceID: senceID,
 	                    statgeID: this.id
 	                };
-	                this.loadSence(options, hashConf);
+	                this.loadSence(options, hashConf, true);
 	            } else {
 	                console.warn("no sence found: " + senceID);
 	            }
 	        }
 	    }, {
 	        key: 'loadSence',
-	        value: function loadSence(options, hashConf) {
+	        value: function loadSence(options, hashConf, slientChangeFlag) {
 	            var _this = this;
 
 	            hashConf = hashConf || _util2.default.parseHash(location.hash);
@@ -823,6 +889,9 @@
 	            }
 
 	            // TODO senceID 和 当前route 查重对比
+	            if (slientChangeFlag) {
+	                if (hashConf.hash) _StatgeManager2.default.slientChangeHash(hashConf.hash);else _StatgeManager2.default.slientChangeHash("!" + (hashConf.statgeID || this.id) + "/" + hashConf.senceID);
+	            }
 	            /// begin
 	            var promise = _Loader2.default.loadSenceRes(senceConf, function (resArr) {
 	                // start change sence
@@ -846,6 +915,7 @@
 	            // 要考虑到有的sence，并没有对应的class，使用一个通用的common class？？
 	            // 创建新的 sence instance
 	            var SenceClass = _Sence2.default.getSence(senceConf.className) || _Sence2.default.Sence;
+	            oldSence && _util2.default.safeRun(oldSence.beforeNextSence, newSence, [isBack, false], 'sence beforeNextSence error: ');
 	            var newSence = new SenceClass(senceRoot, this.id, route);
 	            var route = new _Route2.default(hashConf, options.data, options, newSence, this.id);
 
@@ -951,7 +1021,7 @@
 	exports.default = Statge;
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -959,6 +1029,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
+	exports.slientChangeHash = slientChangeHash;
 	exports.addStatge = addStatge;
 	exports.getStatge = getStatge;
 	exports.removeStatge = removeStatge;
@@ -972,11 +1043,11 @@
 
 	var _util2 = _interopRequireDefault(_util);
 
-	var _SenceConfManager = __webpack_require__(6);
+	var _SenceConfManager = __webpack_require__(7);
 
 	var _SenceConfManager2 = _interopRequireDefault(_SenceConfManager);
 
-	var _Statge = __webpack_require__(7);
+	var _Statge = __webpack_require__(8);
 
 	var _Statge2 = _interopRequireDefault(_Statge);
 
@@ -986,8 +1057,31 @@
 
 	// hash 监听
 	var listenFlag = false;
+
+	function slientChangeHash(hashStr) {
+	    hashStr = hashStr || "#";
+	    if (listenFlag) {
+	        if (hashStr.charAt(0) !== "#") hashStr = "#" + hashStr;
+	        if (hashStr !== location.hash) {
+	            _ignoreTimes++;
+	        }
+	    }
+	    location.hash = hashStr;
+	}
+
+	var _ignoreTimes = 0;
+	function shouldIgnore() {
+	    if (_ignoreTimes > 0) {
+	        _ignoreTimes--;
+	        return true;
+	    } else if (_ignoreTimes < 0) {
+	        _ignoreTimes = 0;
+	    }
+	    return false;
+	}
 	$(window).on("hashchange", function () {
 	    if (!listenFlag) return;
+	    if (shouldIgnore()) return;
 
 	    var hashConf = _util2.default.parseHash(location.hash);
 	    if (hashConf.isSence) {
@@ -1031,7 +1125,7 @@
 	function unRegister(statgeID) {
 	    var st = getStatge(statgeID);
 	    if (st) {
-	        delete statgeMap[statge.id];
+	        delete statgeMap[st.id];
 	        statgeCounter--;
 	    }
 
@@ -1066,47 +1160,6 @@
 	    listenFlag = false;
 	}
 
-	exports.default = $.extend({}, exports);
-
-/***/ },
-/* 9 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.alert = alert;
-	exports.showloading = showloading;
-	exports.hideloading = hideloading;
-	function alert(msg, cb) {}
-
-	var loadingCount = 0;
-	function showloading() {}
-	function hideloading() {}
-
-	var transitionEndEvent = exports.transitionEndEvent = 'webkitTransitionEnd';
-
-	// 检测动画结束事件
-	setTimeout(function () {
-	    var transitions = {
-	        'transition': 'transitionend',
-	        'OTransition': 'oTransitionEnd',
-	        'MozTransition': 'transitionend',
-	        'WebkitTransition': 'webkitTransitionEnd'
-	    };
-	    var el = document.createElement('div');
-	    for (var t in transitions) {
-	        if (el.style[t] !== undefined) {
-	            exports.transitionEndEvent = transitionEndEvent = transitions[t];
-	            return;
-	        }
-	    }
-	}, 0);
-
-	// 导出默认 模块。。。 
-	// 在不使用 export default 时， exports 未定义 exports.default 字段
 	exports.default = $.extend({}, exports);
 
 /***/ }

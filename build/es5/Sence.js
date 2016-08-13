@@ -38,6 +38,8 @@ $.extend(Sence.prototype, {
         return resArr;
     },
     // 给一个修改的机会？？
+    beforeNextSence: function beforeNextSence() {},
+    // 在下一个场景实例创建之前执行
 
     // 类初始化时调用，在动画之前
     init: function init(route) {},

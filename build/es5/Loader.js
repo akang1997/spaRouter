@@ -1,12 +1,16 @@
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _util = require("./util");
+var _util = require('./util');
 
 var _util2 = _interopRequireDefault(_util);
+
+var _ui = require('./ui');
+
+var _ui2 = _interopRequireDefault(_ui);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -74,6 +78,7 @@ var loader = {
         return this.loadUrls(pathArr, _util2.default.makeArr(scriptArr), succ, err);
     },
     loadUrls: function loadUrls(pathArr, scriptArr, succ, err) {
+        showLoading();
         var arr = pathArr.map(function (path) {
             return loader.query(path);
         });
@@ -89,7 +94,7 @@ var loader = {
                 $.isArray(ret) && retArr.push(ret[0]);
             }
             succ && succ.call(null, retArr);
-        }, err);
+        }, err).then(hideLoading);
     }
     // 使用script标签加载，不保证执行先后顺序
     ,
@@ -125,5 +130,12 @@ var loader = {
         return cache;
     }
 };
+
+function showLoading() {
+    _ui2.default.showloading();
+}
+function hideLoading() {
+    _ui2.default.hideloading();
+}
 
 exports.default = loader;

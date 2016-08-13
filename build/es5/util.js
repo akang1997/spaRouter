@@ -26,13 +26,14 @@ function startsWith(s, prefix) {
 
 // 解析hash的各个部件
 function parseHash(hash) {
-    var ret = { isSence: false };
+    var ret = { isSence: false, hash: hash };
     if (startsWith(hash, "#!")) {
         ret.isSence = true;
     } else {
         return ret;
     }
 
+    hash = hash.substr(2);
     var arr = hash.split("?");
     var sence = arr[0];
     var query = arr[1];

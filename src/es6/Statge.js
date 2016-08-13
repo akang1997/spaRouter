@@ -30,8 +30,12 @@ class Statge {
         // route 对象的栈
         this.routeStack = [];
         this.rootEle = $(rootEle);
+        if (this.rootEle.length !== 1) {
+            console.log("not a valid root ele for statge", rootEle);
+            return null;
+        }
         this.runFlag = true;
-        this.id = this.conf.name || util.uniqID("st_statge_");
+        this.id = this.conf.name || this.rootEle.attr("id") || util.uniqID("st_statge_");
 
         this.isMain = !!this.conf.mainFlag;
         this.activeSence = null;
@@ -85,13 +89,13 @@ class Statge {
                 , senceID: senceID
                 , statgeID: this.id
             }
-            this.loadSence(options, hashConf);
+            this.loadSence(options, hashConf, true);
         } else {
             console.warn("no sence found: " + senceID);
         }
     }
 
-    loadSence(options, hashConf) {
+    loadSence(options, hashConf, slientChangeFlag) {
         hashConf = hashConf || util.parseHash(location.hash);
         if (!hashConf.isSence) return;
 
@@ -101,6 +105,10 @@ class Statge {
         }
 
         // TODO senceID 和 当前route 查重对比
+        if (slientChangeFlag) {
+            if (hashConf.hash) StatgeManager.slientChangeHash(hashConf.hash);
+            else StatgeManager.slientChangeHash("!" + (hashConf.statgeID || this.id) + "/" + hashConf.senceID);
+        }
         /// begin
         var promise = Loader.loadSenceRes(senceConf, (resArr) => {
             // start change sence
@@ -123,6 +131,7 @@ class Statge {
         // 要考虑到有的sence，并没有对应的class，使用一个通用的common class？？
         // 创建新的 sence instance
         var SenceClass = Sence.getSence(senceConf.className) || Sence.Sence;
+        oldSence && util.safeRun(oldSence.beforeNextSence, newSence, [isBack, false], 'sence beforeNextSence error: ');
         var newSence = new SenceClass(senceRoot, this.id, route);
         var route = new Route(hashConf, options.data, options, newSence, this.id);
 
@@ -141,7 +150,6 @@ class Statge {
         this._runAni(oldSence, newSence, isBack);
     }
 
-
     _runAni(oldSence, newSence, isBack) {
         // TODO 动画顺序如何配置，旧的动画结束了，新的才开始？
         if (oldSence) {
@@ -156,7 +164,6 @@ class Statge {
             showNewSence(newSence, isBack);
         }
     }
-
 
     // 返回
     back(index, options) {

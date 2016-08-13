@@ -6,11 +6,17 @@ Object.defineProperty(exports, "__esModule", {
 exports.alert = alert;
 exports.showloading = showloading;
 exports.hideloading = hideloading;
-function alert(msg, cb) {}
+function alert(msg, cb) {
+    console.log("TODO: alert:" + msg);
+}
 
 var loadingCount = 0;
-function showloading() {}
-function hideloading() {}
+function showloading() {
+    console.log('TODO: showloading');
+}
+function hideloading() {
+    console.log('TODO: hideloading');
+}
 
 var transitionEndEvent = exports.transitionEndEvent = 'webkitTransitionEnd';
 
