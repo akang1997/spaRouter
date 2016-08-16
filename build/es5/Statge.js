@@ -14,9 +14,9 @@ var _Route = require('./Route');
 
 var _Route2 = _interopRequireDefault(_Route);
 
-var _SenceConfManager = require('./SenceConfManager');
+var _ResManager = require('./ResManager');
 
-var _SenceConfManager2 = _interopRequireDefault(_SenceConfManager);
+var _ResManager2 = _interopRequireDefault(_ResManager);
 
 var _util = require('./util');
 
@@ -47,9 +47,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var defaultConf = {
-    name: null,
-    mainFlag: false,
-    aniType: "fade"
+    id: null, // statge 的 id
+    mainFlag: false, // 是否是主statge
+    aniType: "fade", // 动画类型
+    uniqueHistory: true, // 是否允许一个statge中，加载多个同样的sence
+    defaultDOMCache: false // 默认是否开启 dom cache
 };
 
 // 一个statge的页面切换，只能有一种动画？？
@@ -59,8 +61,7 @@ var Statge = function () {
     function Statge(rootEle, conf) {
         _classCallCheck(this, Statge);
 
-        //  statgeName, mainFlag
-        this.conf = $.extend({}, conf, defaultConf);
+        this.conf = $.extend({}, defaultConf, conf);
         (0, _observable2.default)(this);
 
         // route 对象的栈
@@ -71,7 +72,7 @@ var Statge = function () {
             return null;
         }
         this.runFlag = true;
-        this.id = this.conf.name || this.rootEle.attr("id") || _util2.default.uniqID("st_statge_");
+        this.id = this.conf.id || this.rootEle.attr("id") || _util2.default.uniqID("st_statge_");
 
         this.isMain = !!this.conf.mainFlag;
         this.activeSence = null;
@@ -116,27 +117,27 @@ var Statge = function () {
             var jt = $(e.target),
                 href = jt.attr("href"),
                 conf = _util2.default.parseHash(href);
-            if (conf.isSence && !conf.senceID) {
+            if (conf.isSence && !conf.statgeID) {
                 // 吃掉事件
                 e.stopPropogation();
                 e.preventDefault();
-                conf.senceID = this.id;
+                conf.statgeID = this.id;
             }
         }
     }, {
         key: 'loadSenceById',
-        value: function loadSenceById(senceID, options) {
+        value: function loadSenceById(resID, options) {
             // 是否需要触发hashchange ?
-            var res = _SenceConfManager2.default.getSenceConf(senceID);
+            var res = _ResManager2.default.getResConf(resID);
             if (res) {
                 var hashConf = {
                     isSence: true,
-                    senceID: senceID,
+                    resID: resID,
                     statgeID: this.id
                 };
                 this.loadSence(options, hashConf, true);
             } else {
-                console.warn("no sence found: " + senceID);
+                console.warn("no sence found: " + resID);
             }
         }
     }, {
@@ -147,78 +148,134 @@ var Statge = function () {
             hashConf = hashConf || _util2.default.parseHash(location.hash);
             if (!hashConf.isSence) return;
 
-            var senceConf = _SenceConfManager2.default.getSenceConf(hashConf.senceID);
-            if (!senceConf) {
-                return console.warn("no sence found: " + hashConf.senceID);
+            var resConf = _ResManager2.default.getResConf(hashConf.resID);
+            if (!resConf) {
+                return console.warn("no sence found: " + hashConf.resID);
             }
 
-            // TODO senceID 和 当前route 查重对比
+            // TODO resID 和 当前route 查重对比
             if (slientChangeFlag) {
-                if (hashConf.hash) _StatgeManager2.default.slientChangeHash(hashConf.hash);else _StatgeManager2.default.slientChangeHash("!" + (hashConf.statgeID || this.id) + "/" + hashConf.senceID);
+                if (hashConf.hash) _StatgeManager2.default.slientChangeHash(hashConf.hash);else _StatgeManager2.default.slientChangeHash("!" + (hashConf.statgeID || this.id) + "/" + hashConf.resID);
             }
             /// begin
-            var promise = _Loader2.default.loadSenceRes(senceConf, function (resArr) {
+            var promise = _Loader2.default.loadSenceRes(resConf, function (resArr) {
                 // start change sence
-                _this._changeSecne(hashConf, senceConf, resArr, options);
+                _this._changeSecne(hashConf, resConf, resArr, options);
             }, function () {
                 /// TODO alert load error
-                console.error("load sence resource error: " + hashConf.senceID);
+                console.error("load sence resource error: " + hashConf.resID);
             });
         }
     }, {
+        key: '_checkSenceDuplicate',
+        value: function _checkSenceDuplicate() {}
+    }, {
         key: '_changeSecne',
-        value: function _changeSecne(hashConf, senceConf, resArr, options, isBack) {
-            var oldSence = this.activeSence;
-            options = options || {};
-            var aniType = options.aniType || "fade";
+        value: function _changeSecne(hashConf, resConf, resArr, options, isBack) {
+            var _this2 = this;
 
+            options = options || {};
+            var oldSence = this.activeSence,
+                defaultDOMCache = this.defaultDOMCache,
+                aniType = options.aniType || "fade";
+
+            oldSence && _util2.default.safeRun(oldSence.beforeNextSence, oldSence, [isBack, false], 'oldSence.beforeNextSence error: ');
+
+            var ret = this._createSence(hashConf, resConf, resArr, options, isBack, aniType);
+
+            // 更新statge状态
+            this.activeSence = ret.sence;
+            this.routeStack.push(ret.route);
+
+            // 开启动画，在 old hide之后，destroy
+            requestAnimationFrame(function () {
+                _runAni(oldSence, ret.sence, isBack, _this2.defaultDOMCache, hashConf);
+            });
+        }
+    }, {
+        key: '_createSence',
+        value: function _createSence(hashConf, resConf, resArr, options, isBack, aniType) {
             // 创建新的 sence root dom
-            var senceRoot = createSenceRoot(this.id, hashConf.senceID, aniType);
+            var senceRoot = createSenceRoot(this.id, hashConf.resID, aniType);
             senceRoot.appendTo(this.sencesEle);
 
-            // 要考虑到有的sence，并没有对应的class，使用一个通用的common class？？
+            // 要考虑到有的sence，并没有对应的class，使用一个通用的common class
             // 创建新的 sence instance
-            var SenceClass = _Sence2.default.getSence(senceConf.className) || _Sence2.default.Sence;
-            oldSence && _util2.default.safeRun(oldSence.beforeNextSence, newSence, [isBack, false], 'sence beforeNextSence error: ');
+            var SenceClass = _Sence2.default.getSence(resConf.className) || _Sence2.default.Sence;
+            var route = new _Route2.default(hashConf, options.data, options, null, this.id);
             var newSence = new SenceClass(senceRoot, this.id, route);
-            var route = new _Route2.default(hashConf, options.data, options, newSence, this.id);
+            route.sence = newSence;
 
             resArr = _util2.default.safeRun(newSence.beforeInit, newSence, [resArr]) || resArr; /// ???
 
             // 初始化新的 sence instance
             senceRoot.append(resArr.join(""));
-            _util2.default.safeRun(newSence.init, newSence, [hashConf, options.data, senceConf], 'sence init error: ');
+            _util2.default.safeRun(newSence.init, newSence, [options.data, hashConf, resConf], 'sence init error: ');
             _util2.default.safeRun(newSence.beforeAnimation, newSence, [isBack, false], 'sence beforeAnimation error: ');
 
-            // 更新状态
-            this.activeSence = newSence;
-            this.routeStack.push(route);
+            return { sence: newSence, route: route };
+        }
 
-            // 开启动画
-            this._runAni(oldSence, newSence, isBack);
-        }
+        // reload active sence
+
     }, {
-        key: '_runAni',
-        value: function _runAni(oldSence, newSence, isBack) {
-            // TODO 动画顺序如何配置，旧的动画结束了，新的才开始？
-            if (oldSence) {
-                _util2.default.safeRun(oldSence.beforeAnimation, oldSence, [isBack, true], "oldSence.beforeAnimation");
-                showOut(oldSence.$root, function () {
-                    _util2.default.safeRun(oldSence.afterAnimation, oldSence, [isBack, true], "oldSence.afterAnimation");
-                    // util.safeRun(oldSence.destroy, oldSence, null, "oldSence.destroy");
-                    destroyOldSence(oldSence);
-                    showNewSence(newSence, isBack);
-                });
-            } else {
-                showNewSence(newSence, isBack);
-            }
-        }
+        key: 'reload',
+        value: function reload() {}
 
         // 返回
 
     }, {
         key: 'back',
-        value: function back(index, options) {}
+        value: function back(num, options) {
+            var _this3 = this;
+
+            var len = this.routeStack.length,
+                route,
+                index,
+                currentRoute;
+            if (len <= 1) return false; // 至少保留一项
+            num = num || 1;
+            if (num > len - 1) {
+                num = len - 1;
+            }
+            var dropArr = this.routeStack.splice(len - num); // 这一段要丢弃的
+
+            // 一路销毁
+            dropArr.forEach(function (item) {
+                if (_this3.activeSence !== item.sence) {
+                    destroyOldRoute(item, null, 0, true);
+                }
+            });
+
+            var oldSence = this.activeSence;
+            // 要重新加载的 route
+            route = this.routeStack[this.routeStack.length - 1];
+            if (route.sence && route.cached) {
+                // resume
+                route.cached = false;
+                this.activeSence = r.sence;
+                // 直接切换动画，不再启动加载流程
+                _runAni(oldSence, route.sence, true, "forceClean", null);
+            } else {
+                // 启动加载流程，重新加载
+                this.activeSence = null;
+                this.routeStack.pop();
+                aniHideSence(oldSence, true, function () {
+                    cleanOldSence(oldSence, "forceClean", true, null);
+                    _this3.loadSence(route.options, route.hashConf);
+                });
+            }
+            return true;
+        }
+
+        // 重新加载 activeSence
+
+    }, {
+        key: 'reload',
+        value: function reload() {}
+    }, {
+        key: 'backTo',
+        value: function backTo() {}
 
         // 开始监听事件，默认为开始
 
@@ -235,10 +292,10 @@ var Statge = function () {
         key: 'destroy',
         value: function destroy() {
             this.off();
-            this.rootEle.off().empty().remove();
             try {
-                // TODO 通知所有的statge下sence destroy
+                // TODO 通知statge下所有的sence destroy
             } catch (e) {}
+            this.rootEle.off().empty().remove();
             this.rootEle = this.sencesEle = this.routeStack = this.activeSence = null;
             _StatgeManager2.default.unRegister(this.id);
         }
@@ -246,6 +303,37 @@ var Statge = function () {
 
     return Statge;
 }();
+
+// 动画结束的干活
+
+
+function _runAni(oldSence, newSence, isBack, defaultDOMCache, hashConf) {
+    // TODO 动画顺序如何配置，旧的动画结束了，新的才开始？
+    if (oldSence) {
+        aniHideSence(oldSence, isBack, function () {
+            _util2.default.safeRun(oldSence.afterAnimation, oldSence, [isBack, true], "oldSence.afterAnimation");
+            // util.safeRun(oldSence.destroy, oldSence, null, "oldSence.destroy");
+            cleanOldSence(oldSence, defaultDOMCache, isBack, hashConf);
+            aniShowSence(newSence, isBack);
+        });
+    } else {
+        aniShowSence(newSence, isBack);
+    }
+}
+
+function aniHideSence(oldSence, isBack, cb) {
+    requestAnimationFrame(function () {
+        _util2.default.safeRun(oldSence.beforeAnimation, oldSence, [isBack, true], "oldSence.beforeAnimation");
+        showOut(oldSence.$root, cb);
+    });
+}
+function aniShowSence(newSence, isBack) {
+    requestAnimationFrame(function () {
+        showIn(newSence.$root, function () {
+            _util2.default.safeRun(newSence.afterAnimation, newSence, [isBack, false], "newSence.afterAnimation: ");
+        });
+    });
+}
 
 function showIn($dom, after) {
     return $dom.removeClass("sts-before").addClass("sts-now").one(_ui2.default.transitionEndEvent, after);
@@ -255,31 +343,50 @@ function showOut($dom, after) {
     return $dom.removeClass("sts-now").addClass("sts-after").one(_ui2.default.transitionEndEvent, after);
 }
 
-function showNewSence(newSence, isBack) {
-    showIn(newSence.$root, function () {
-        _util2.default.safeRun(newSence.afterAnimation, newSence, [isBack, false], "newSence.afterAnimation: ");
-    });
+// 从 routeStack 中 移除
+function destroyOldRoute(route, routeStack, index, isBack) {
+    if (route.sence) {
+        destroySence(oldSence);
+    }
+    route.sence = route.options = null;
+    routeStack && routeStack.splice(index, 1);
 }
 
-function destroyOldSence(oldSence) {
-    try {
-        // hide
-        oldSence.$root.hide();
-        // destroy
-        oldSence.destroy();
-        if (oldSence.$root) {
-            oldSence.$root.off().empty().remove();
-            oldSence.$root = null;
-        }
-    } catch (e) {
-        console.warn("error when destroy old sence: ", e);
+function cleanOldSence(oldSence, defaultDOMCache, isBack, hashConf) {
+    // hide
+    oldSence.$root && oldSence.$root.hide();
+
+    var domCache;
+    if (defaultDOMCache === "forceClean") {
+        domCache = false;
+    } else {
+        domCache = oldSence.shouldDOMCache(hashConf) || defaultDOMCache;
+    }
+    if (!isBack && domCache) {
+        // 缓存，不清理
+        oldSence.$route.cached = true;
+        _util2.default.safeRun(oldSence.pause, oldSence, null, "oldSence.pause: ");
+        return;
+    }
+
+    destroySence(oldSence);
+}
+
+function destroySence(oldSence) {
+    // destroy
+    _util2.default.safeRun(oldSence.destroy, oldSence, null, "oldSence.destroy: ");
+    if (oldSence.$route) oldSence.$route.sence = null;
+    // clean
+    if (oldSence.$root) {
+        oldSence.$root.off().empty().remove();
+        oldSence.$root = null;
     }
 }
 
-function createSenceRoot(statgeID, senceID, aniType) {
+function createSenceRoot(statgeID, resID, aniType) {
     return $('<div class="st-sence sts-before"></div>') // before show
     // .addClass("st-statge-" + statgeID)  // 打上 view id
-    .addClass("sts-" + aniType).addClass("st-id-" + senceID).attr("data-senceid", senceID);
+    .addClass("sts-" + aniType).addClass("st-id-" + resID).attr("data-resID", resID);
 }
 
 exports.default = Statge;

@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -7,9 +7,13 @@ exports.Sence = Sence;
 exports.extendSence = extendSence;
 exports.getSence = getSence;
 
-var _observable = require("./observable");
+var _observable = require('./observable');
 
 var _observable2 = _interopRequireDefault(_observable);
+
+var _util = require('./util');
+
+var _util2 = _interopRequireDefault(_util);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -27,7 +31,9 @@ function Sence(container, statgeID, route) {
     (0, _observable2.default)(this);
     this.$root = $(container);
     this.statgeID = statgeID;
-
+    this.id = _util2.default.uniqID("sence_00");
+    this.$route = route;
+    this.resID = route.hashConf.resID;
     // this.init.apply(this, arguments);
 }
 
@@ -38,11 +44,9 @@ $.extend(Sence.prototype, {
         return resArr;
     },
     // 给一个修改的机会？？
-    beforeNextSence: function beforeNextSence() {},
-    // 在下一个场景实例创建之前执行
 
     // 类初始化时调用，在动画之前
-    init: function init(route) {},
+    init: function init(data, hashConf, senceConf) {},
 
 
     /// 动画类型
@@ -66,9 +70,17 @@ $.extend(Sence.prototype, {
     pause: function pause() {},
 
 
-    // 移除动画
-    beforeRemove: function beforeRemove() {},
+    // return true / false ，来实现cache
+    shouldDOMCache: function shouldDOMCache(conf) {
+        return false;
+    },
 
+
+    // 移除动画
+    // beforeRemove() { },
+
+    beforeNextSence: function beforeNextSence() {},
+    // 在下一个场景实例创建之前执行
 
     // 页面销毁
     destroy: function destroy() {

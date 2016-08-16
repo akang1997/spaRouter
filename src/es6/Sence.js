@@ -1,5 +1,5 @@
 import observable from './observable';
-
+import util from './util'
 /**
  * Sence 场景基类 ， 类似android的 activity ， 一个通用的sence class
  * 
@@ -13,17 +13,18 @@ export function Sence(container, statgeID, route) { // 公共的构造函数，�
     observable(this);
     this.$root = $(container);
     this.statgeID = statgeID;
-
+    this.id = util.uniqID("sence_00");
+    this.$route = route;
+    this.resID = route.hashConf.resID;
     // this.init.apply(this, arguments);
 }
 
 $.extend(Sence.prototype, {
     // 新页面(必须带有data-page属性)插入到DOM的时候，在资源加载进去之前会触发
     beforeInit(resArr) { return resArr },  // 给一个修改的机会？？
-    beforeNextSence(){ },  // 在下一个场景实例创建之前执行
 
     // 类初始化时调用，在动画之前
-    init(route) { },
+    init(data, hashConf, senceConf) { },
 
     /// 动画类型
     // 1. 首次载入入场动画
@@ -42,8 +43,13 @@ $.extend(Sence.prototype, {
     // 被切换到后台
     pause() { },
 
+    // return true / false ，来实现cache
+    shouldDOMCache(conf) { return false; },
+
     // 移除动画
-    beforeRemove() { },
+    // beforeRemove() { },
+
+    beforeNextSence() { },  // 在下一个场景实例创建之前执行
 
     // 页面销毁
     destroy() {

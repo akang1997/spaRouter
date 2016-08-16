@@ -1,17 +1,17 @@
 $(function () {
     st.start();
-    window.statge1 = st.addStatge("#st1", {});
-    statge1.loadSenceById("x1");
+    window.statge1 = st.addStatge("#statge1", {});
+    statge1.loadSenceById("sence1");
     setTimeout(function () {
-        statge1.loadSenceById("x2")
+        statge1.loadSenceById("sence2")
     }, 2000)
 
 
-    window.statge2 = st.addStatge("#st2", {});
+    window.statge2 = st.addStatge("#statge2", {});
     setTimeout(function () {
-        statge2.loadSenceById("x2");
+        statge2.loadSenceById("sence2");
         setTimeout(function () {
-            statge2.loadSenceById("nest");
+            statge2.loadSenceById("sencenest");
         }, 2000)
     }, 1000);
 

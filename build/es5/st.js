@@ -12,9 +12,9 @@ var _Sence = require('./Sence');
 
 var _Sence2 = _interopRequireDefault(_Sence);
 
-var _SenceConfManager = require('./SenceConfManager');
+var _ResManager = require('./ResManager');
 
-var _SenceConfManager2 = _interopRequireDefault(_SenceConfManager);
+var _ResManager2 = _interopRequireDefault(_ResManager);
 
 var _observable = require('./observable');
 
@@ -46,6 +46,6 @@ var st = {
     util: _util2.default
 };
 
-$.extend(st, _SenceConfManager2.default, _StatgeManager2.default, _ui2.default, _Sence2.default);
+$.extend(st, _ResManager2.default, _StatgeManager2.default, _ui2.default, _Sence2.default);
 
 window.st = st;

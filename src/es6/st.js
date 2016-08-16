@@ -2,7 +2,7 @@ import Loader from './Loader'
 import Route from './Route'
 
 import Sence from './Sence'
-import SenceConfManager from './SenceConfManager'
+import ResManager from './ResManager'
 
 import observable from './observable'
 
@@ -21,7 +21,7 @@ var st = {
     ,util : util
 }
 
-$.extend(st, SenceConfManager, StatgeManager, ui, Sence);
+$.extend(st, ResManager, StatgeManager, ui, Sence);
 
 
 window.st = st;

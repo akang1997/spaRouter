@@ -46,7 +46,7 @@
 
 	'use strict';
 
-	var _loader = __webpack_require__(10);
+	var _loader = __webpack_require__(11);
 
 	var _loader2 = _interopRequireDefault(_loader);
 
@@ -59,7 +59,7 @@
 /***/ },
 /* 1 */,
 /* 2 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
@@ -73,6 +73,13 @@
 	exports.arrFlat = arrFlat;
 	exports.argsArr = argsArr;
 	exports.safeRun = safeRun;
+
+	var _requestAnimationFrame = __webpack_require__(3);
+
+	var _requestAnimationFrame2 = _interopRequireDefault(_requestAnimationFrame);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 	var counter = 0;
 	function uniqID(prefix) {
 	    return (prefix || "") + counter++;
@@ -103,10 +110,10 @@
 
 	    var sencePath = sence.split("/");
 	    if (sencePath.length == 2) {
-	        ret.senceID = sencePath[1];
+	        ret.resID = sencePath[1];
 	        ret.statgeID = sencePath[0];
 	    } else {
-	        ret.senceID = sencePath[0];
+	        ret.resID = sencePath[0];
 	    }
 
 	    if (query) {
@@ -163,6 +170,39 @@
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
+	(function (global) {
+	    if (global.requestAnimationFrame) {
+	        return;
+	    }
+
+	    if (global.webkitRequestAnimationFrame) {
+	        // Chrome <= 23, Safari <= 6.1, Blackberry 10
+	        global.requestAnimationFrame = global['webkitRequestAnimationFrame'];
+	        global.cancelAnimationFrame = global['webkitCancelAnimationFrame'] || global['webkitCancelRequestAnimationFrame'];
+	        return;
+	    }
+
+	    // IE <= 9, Android <= 4.3, very old/rare browsers
+	    global.requestAnimationFrame = function (callback) {
+	        return global.setTimeout(callback, 0);
+	    };
+
+	    global.cancelAnimationFrame = function (id) {
+	        clearTimeout(id);
+	    };
+	})(window);
+
+	exports.default = 1;
+
+/***/ },
+/* 4 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
 	exports.alert = alert;
 	exports.showloading = showloading;
 	exports.hideloading = hideloading;
@@ -202,13 +242,13 @@
 	exports.default = $.extend({}, exports);
 
 /***/ },
-/* 4 */,
 /* 5 */,
 /* 6 */,
 /* 7 */,
 /* 8 */,
 /* 9 */,
-/* 10 */
+/* 10 */,
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -221,7 +261,7 @@
 
 	var _util2 = _interopRequireDefault(_util);
 
-	var _ui = __webpack_require__(3);
+	var _ui = __webpack_require__(4);
 
 	var _ui2 = _interopRequireDefault(_ui);
 
@@ -280,13 +320,13 @@
 	            });
 	        }
 	    },
-	    loadSenceRes: function loadSenceRes(senceConf, succ, err) {
+	    loadSenceRes: function loadSenceRes(senceResConf, succ, err) {
 	        var pathArr = [],
 	            scriptArr = [];
-	        // if(senceConf.css) pathArr.push(senceConf.css);
-	        if (senceConf.html) pathArr.push(senceConf.html);
+	        // if(senceResConf.css) pathArr.push(senceResConf.css);
+	        if (senceResConf.html) pathArr.push(senceResConf.html);
 	        pathArr = _util2.default.arrFlat(pathArr);
-	        if (senceConf.script) scriptArr = senceConf.script;
+	        if (senceResConf.script) scriptArr = senceResConf.script;
 
 	        return this.loadUrls(pathArr, _util2.default.makeArr(scriptArr), succ, err);
 	    },

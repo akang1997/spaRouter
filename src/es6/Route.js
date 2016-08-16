@@ -10,6 +10,7 @@ class Route {
         this.options = options;
         this.sence = senceInstance;
         this.statgeID = statgeID;
+        this.cached = false;
     }
 }
 

@@ -67,13 +67,13 @@ var loader = {
             });
         }
     },
-    loadSenceRes: function loadSenceRes(senceConf, succ, err) {
+    loadSenceRes: function loadSenceRes(senceResConf, succ, err) {
         var pathArr = [],
             scriptArr = [];
-        // if(senceConf.css) pathArr.push(senceConf.css);
-        if (senceConf.html) pathArr.push(senceConf.html);
+        // if(senceResConf.css) pathArr.push(senceResConf.css);
+        if (senceResConf.html) pathArr.push(senceResConf.html);
         pathArr = _util2.default.arrFlat(pathArr);
-        if (senceConf.script) scriptArr = senceConf.script;
+        if (senceResConf.script) scriptArr = senceResConf.script;
 
         return this.loadUrls(pathArr, _util2.default.makeArr(scriptArr), succ, err);
     },

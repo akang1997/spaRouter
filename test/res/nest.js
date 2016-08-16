@@ -1,10 +1,10 @@
 st.extendSence("nest", {
-    init: function (param) {
-        console.log("xx1 init:", param);
-        window.statge3 = st.addStatge("#st3", {});
+    init: function (data) {
+        console.log("nest init:", data);
+        window.statge3 = st.addStatge("#statge3", {});
 
         setTimeout(function () {
-            statge3.loadSenceById("x1");
+            statge3.loadSenceById("sence1");
         }, 2000);
     }
     , beforeNextSence: function () {

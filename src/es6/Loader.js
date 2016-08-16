@@ -1,4 +1,4 @@
-import util from './util'
+import utils from './util'
 import ui from './ui'
 
 // ajax resource loader, base on jquery ajax api
@@ -56,14 +56,14 @@ var loader = {
             });
         }
     }
-    , loadSenceRes(senceConf, succ, err) {
+    , loadSenceRes(senceResConf, succ, err) {
         var pathArr = [], scriptArr = [];
-        // if(senceConf.css) pathArr.push(senceConf.css);
-        if (senceConf.html) pathArr.push(senceConf.html);
-        pathArr = util.arrFlat(pathArr);
-        if (senceConf.script) scriptArr = senceConf.script;
+        // if(senceResConf.css) pathArr.push(senceResConf.css);
+        if (senceResConf.html) pathArr.push(senceResConf.html);
+        pathArr = utils.arrFlat(pathArr);
+        if (senceResConf.script) scriptArr = senceResConf.script;
 
-        return this.loadUrls(pathArr, util.makeArr(scriptArr), succ, err);
+        return this.loadUrls(pathArr, utils.makeArr(scriptArr), succ, err);
     }
     , loadUrls(pathArr, scriptArr, succ, err) {
         showLoading();

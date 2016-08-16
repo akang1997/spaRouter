@@ -1,6 +1,6 @@
 st.extendSence("xx1", {
-    init: function (param) {
-        console.log("xx1 init:", param);
+    init: function (data) {
+        console.log("xx1 init:", data);
     }
 });
 

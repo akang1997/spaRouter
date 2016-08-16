@@ -20,6 +20,7 @@ var Route = function Route(hashConf, data, options, senceInstance, statgeID) {
     this.options = options;
     this.sence = senceInstance;
     this.statgeID = statgeID;
+    this.cached = false;
 };
 
 exports.default = Route;

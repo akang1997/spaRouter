@@ -1,3 +1,5 @@
+import ra  from './requestAnimationFrame'
+
 var counter = 0;
 export function uniqID(prefix) {
     return (prefix || "") + (counter++);
@@ -28,10 +30,10 @@ export function parseHash(hash) {
 
     var sencePath = sence.split("/");
     if (sencePath.length == 2) {
-        ret.senceID = sencePath[1];
+        ret.resID = sencePath[1];
         ret.statgeID = sencePath[0];
     } else {
-        ret.senceID = sencePath[0];
+        ret.resID = sencePath[0];
     }
 
     if (query) {

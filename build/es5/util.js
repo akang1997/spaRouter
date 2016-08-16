@@ -10,6 +10,13 @@ exports.makeArr = makeArr;
 exports.arrFlat = arrFlat;
 exports.argsArr = argsArr;
 exports.safeRun = safeRun;
+
+var _requestAnimationFrame = require("./requestAnimationFrame");
+
+var _requestAnimationFrame2 = _interopRequireDefault(_requestAnimationFrame);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 var counter = 0;
 function uniqID(prefix) {
     return (prefix || "") + counter++;
@@ -40,10 +47,10 @@ function parseHash(hash) {
 
     var sencePath = sence.split("/");
     if (sencePath.length == 2) {
-        ret.senceID = sencePath[1];
+        ret.resID = sencePath[1];
         ret.statgeID = sencePath[0];
     } else {
-        ret.senceID = sencePath[0];
+        ret.resID = sencePath[0];
     }
 
     if (query) {

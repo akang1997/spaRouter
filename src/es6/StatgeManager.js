@@ -1,5 +1,5 @@
 import util from './util'
-import SenceConfManager from './SenceConfManager'
+import ResManager from './ResManager'
 import Statge from './Statge'
 
 /// 单例模式

@@ -2,7 +2,7 @@
 
 // Interface
 // SenceConf {
-//     senceId: string;   /// sence资源id
+//     resID: string;   /// sence资源id
 //     className: string; /// sence class name
 //     script?: string | string[];
 //     html?: string | string[]; 
@@ -12,22 +12,22 @@
 
 
 // 存放所有的资源配置
-var senceConfMap = {}; /// string --> SenceConf
+var resConfMap = {}; /// string --> SenceConf
 /**
  * @param  pc : sence config or sence config map
  */
-export function addSenceConf(pc) {
+export function addResConf(pc) {
     // not check duplicate
-    if (typeof pc.senceId === "string") {
-        senceConfMap[pc.senceId] = pc;
+    if (typeof pc.resId === "string") {
+        resConfMap[pc.resId] = pc;
     } else {
-        $.extend(senceConfMap, pc);  // sence config map
+        $.extend(resConfMap, pc);  // sence config map
     }
 }
 
 
-export function getSenceConf(senceId){
-    return senceConfMap[senceId];
+export function getResConf(resId){
+    return resConfMap[resId];
 }
 
 
